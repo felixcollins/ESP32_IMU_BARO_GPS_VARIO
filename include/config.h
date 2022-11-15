@@ -48,8 +48,8 @@
 
 #define pinDRDYINT  4
 
-#define pinGpsTXD   21
-#define pinGpsRXD   22
+#define pinGpsTXD   22
+#define pinGpsRXD   21
 #define pinGpsRTS  (-1)
 #define pinGpsCTS  (-1)
 
@@ -57,9 +57,9 @@
 #define UART_RX_BUFFER_SIZE   256
 
 #define pinBtn0     0
-#define pinBtnL     36
+#define pinBtnL     39 //36
 #define pinBtnM     34
-#define pinBtnR     39
+#define pinBtnR     36 //39
 
 #define BTN0()	((GPIO.in >> pinBtn0) & 0x1)
 #define BTNL()  ((GPIO.in1.val >> (pinBtnL - 32)) & 0x1)
