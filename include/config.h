@@ -56,10 +56,13 @@
 #define GPS_UART_NUM          UART_NUM_1
 #define UART_RX_BUFFER_SIZE   256
 
-#define pinBtn0     0
-#define pinBtnL     39 //36
+#define pinBtn0     15 
+//0
+#define pinBtnL     39 
+//36
 #define pinBtnM     34
-#define pinBtnR     36 //39
+#define pinBtnR     36 
+//39
 
 #define BTN0()	((GPIO.in >> pinBtn0) & 0x1)
 #define BTNL()  ((GPIO.in1.val >> (pinBtnL - 32)) & 0x1)
