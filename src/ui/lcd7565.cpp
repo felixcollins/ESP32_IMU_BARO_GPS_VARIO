@@ -156,7 +156,7 @@ void lcd_printf(bool immed, int page, int col, const char* format, ...)    {
 	char szbuf[22];
    va_list args;
    va_start(args,format);
-   vsprintf(szbuf,format,args);
+   vsnprintf(szbuf,21,format,args);
    va_end(args);
 	lcd_print_sz(page, col, szbuf);
    if (immed) lcd_send_frame();
@@ -166,7 +166,7 @@ void lcd_printlnf(bool immed, int page, const char* format, ...)    {
 	char szbuf[22];
    va_list args;
    va_start(args,format);
-   vsprintf(szbuf,format,args);
+   vsnprintf(szbuf,21,format,args);
    va_end(args);
    lcd_clear_page(page);
 	lcd_print_sz(page, 0, szbuf);
