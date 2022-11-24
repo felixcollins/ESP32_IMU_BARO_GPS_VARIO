@@ -114,6 +114,7 @@ static void btserial_task(void *pvParameter) {
 static void ui_task(void *pvParameter) {
     ESP_LOGI(TAG, "Starting ui task on core %d with priority %d", xPortGetCoreID(), uxTaskPriorityGet(NULL));
     int counter = 0;
+//    int log_counter =0;
     NAV_PVT navpvt;
     TRACK  track;
     IsGpsFixStable = false;
@@ -127,6 +128,7 @@ static void ui_task(void *pvParameter) {
 		if (IsGpsNavUpdated) {
 			IsGpsNavUpdated = false;
             counter++;
+//            log_counter++;
             if (counter >= 5) {
                 counter = 0;
                 // GPS update interval = 0.1s => display update interval =  0.5s
@@ -134,6 +136,14 @@ static void ui_task(void *pvParameter) {
                 ui_updateFlightDisplay(&navpvt,&track);
                 }
 			}
+            // if(log_counter >= 50){
+            //     ESP_LOGI(TAG, "GPS lat: %i, dop:%i", navpvt.nav.latDeg7, navpvt.nav.posDOP);
+            //     log_counter = 0;
+            //     ESP_LOGW(TAG, "GPS DATA");
+            //     for (int i = 0 ; i < 100; i += 8){
+            //         ESP_LOGW(TAG, "%02x %02x %02x %02x %02x %02x %02x %02x", navpvt.pktBuffer[i], navpvt.pktBuffer[i + 1], navpvt.pktBuffer[i + 2], navpvt.pktBuffer[i + 3], navpvt.pktBuffer[i + 4], navpvt.pktBuffer[i + 5], navpvt.pktBuffer[i + 6], navpvt.pktBuffer[i + 7]);
+            //     }
+            // }
         if (IsGpsTrackActive && EndGpsTrack) {
             IsGpsTrackActive = false;
             lcd_clear_frame();
@@ -523,7 +533,41 @@ static void main_task(void* pvParameter) {
         lcd_printlnf(true,4,"Erased");
         }
     delayMs(1000);
+
+    ////////////////////////////////////////////////////////////////////
+    //Audio Test
+    ESP_LOGI(TAG, "Press btn0 within 3 seconds to test audio");
+    LED_ON();
+    bool isAudioTestRequired = false;
+    int count = 300;
+    while (count--)
+    {
+        lcd_printlnf(true, 4, "btn0 - test audio %ds", (count + 50) / 100);
+        if (BTN0() == LOW)
+        {
+            ESP_LOGI(TAG, "btn0 PRESSED");
+            isAudioTestRequired = true;
+            break;
+        }
+        delayMs(10);
+    }
     AUDIO_AMP_ENABLE();
+    delayMs(1000);
+    if (isAudioTestRequired)
+    {
+        while (BTN0() != LOW)
+        {
+            lcd_printlnf(true, 4, "playing tone");
+            ESP_LOGI(TAG, "Tone!");
+            audio_generate_tone(440, 500);
+            lcd_printlnf(true, 4, "silence");
+            delayMs(1000);
+        }
+        lcd_printlnf(true, 4, "Exit Audio Test");
+        delayMs(1000);
+    }
+    /////////////////////////////////////////////////////////////
+
     IsServer = false;
     ESP_LOGI(TAG,"Press btn0 within 3 seconds to start WiFi AP and web server");
     counter = 300;
