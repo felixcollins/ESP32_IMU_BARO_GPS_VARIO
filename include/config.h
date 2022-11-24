@@ -101,8 +101,9 @@
 #define pinAudioDAC     25
 
 // using NS8002 amp module, shutdown pin is pulled up to 5V via external 100K resistor. Pull down to enable
-#define AUDIO_AMP_ENABLE()   {GPIO.out1_w1tc.val = ((uint32_t)1 << (pinAudioAmpEna - 32));}
-#define AUDIO_AMP_DISABLE()  {GPIO.out1_w1ts.val = ((uint32_t)1 << (pinAudioAmpEna - 32));}
+// For PAM8403 module, pull down to disable
+#define AUDIO_AMP_ENABLE()   {GPIO.out1_w1ts.val = ((uint32_t)1 << (pinAudioAmpEna - 32));}
+#define AUDIO_AMP_DISABLE()  {GPIO.out1_w1tc.val = ((uint32_t)1 << (pinAudioAmpEna - 32));}
 
 #define FLASH_W25Q128  // 128Mbit 104MHz
 
