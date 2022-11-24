@@ -193,21 +193,27 @@ static void vario_taskConfig() {
     // if calib.txt not found, enforce accel and mag calibration and write new calib.txt
     bool isAccelMagCalibRequired = !IsCalibrated;
     int counter = 300;
-    while ((!isAccelMagCalibRequired) && counter--) {
-   	    lcd_printlnf(true,3,"Gyro calib in %ds",(counter+50)/100);
-        if (BTN0() == LOW) {
+    lcd_printlnf(false, 4, "Keep unit still.");
+    lcd_printlnf(false, 5, "btn 0- CAL Acc,Mag");
+    while ((!isAccelMagCalibRequired) && counter--)
+    {
+        lcd_printlnf(true,3,"Gyro calib in %ds.",(counter+50)/100);
+        if (BTN0() == LOW)
+        {
             // manually force accel+mag calibration by pressing BTN0 during gyro calib countdown
             isAccelMagCalibRequired = true; 
             break;
-            }
-        delayMs(10);	
-		}
+        }
+        delayMs(10);
+    }
     if (isAccelMagCalibRequired) {
         counter = 8;
-        while (counter--) {
-            lcd_printlnf(true,3,"Accel calib in %ds",counter+1);
-            delayMs(1000);	
-            }
+
+        lcd_printlnf(false, 4, "Keep unit still.");
+        while (counter--){
+            lcd_printlnf(true, 3, "Accel calib in %ds", counter + 1);
+            delayMs(1000);
+        }
         lcd_printlnf(true,3, "Calibrating Accel...");
         if (mpu9250_calibrateAccel() < 0) {
  	        lcd_printlnf(true,3,"Accel calib failed");
@@ -215,10 +221,11 @@ static void vario_taskConfig() {
             }
         delayMs(1000);
         counter = 5;
+        lcd_printlnf(true, 4, "Move unit in fig 8.");
         while (counter--) {
-            lcd_printlnf(true,3,"Mag calib in %ds",counter+1);
-            delayMs(1000);	
-            }
+            lcd_printlnf(true, 3, "Mag calib in %ds", counter + 1);
+            delayMs(1000);
+        }
         lcd_printlnf(true,3,"Calibrating Mag...");
         if (mpu9250_calibrateMag()  < 0 ) {
  	        lcd_printlnf(true,3,"Mag calib failed");
@@ -226,10 +233,11 @@ static void vario_taskConfig() {
         }
     if (isAccelMagCalibRequired) {
         counter = 3;
+        lcd_printlnf(true, 4, "Keep unit still.");
         while (counter--) {
-            lcd_printlnf(true,3,"Gyro calib in %ds",counter+1);
-            }
+            lcd_printlnf(true, 3, "Gyro calib in %ds", counter + 1);
         }
+    }
     lcd_printlnf(true,3,"Calibrating Gyro...");
     if (mpu9250_calibrateGyro() < 0) {
  	    lcd_printlnf(true,3,"Gyro calib fail");
@@ -515,6 +523,7 @@ static void main_task(void* pvParameter) {
         lcd_printlnf(true,4,"Erased");
         }
     delayMs(1000);
+    AUDIO_AMP_ENABLE();
     IsServer = false;
     ESP_LOGI(TAG,"Press btn0 within 3 seconds to start WiFi AP and web server");
     counter = 300;
@@ -605,7 +614,19 @@ void loop() {
     if (BtnRPressed) {
         btn_clear();
         ESP_LOGV(TAG,"Btn R");
-        IsSpeakerEnabled = !IsSpeakerEnabled; // mute/enable speaker
+        if(IsSpeakerEnabled)
+        {
+            IsSpeakerEnabled = false;
+            audio_generate_tone(300, 800);
+            audio_set_frequency(0);
+            AUDIO_AMP_DISABLE();
+        }
+        else
+        {
+            AUDIO_AMP_ENABLE();
+            audio_generate_tone(1000, 800);
+            IsSpeakerEnabled = true;
+        }
         }
     if (BtnLPressed) {
         btn_clear();

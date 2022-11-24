@@ -118,14 +118,14 @@ void audio_config(int pnDacChan) {
 	
 void audio_set_frequency(int freqHz) {
 	if (freqHz > 0) {
-      AUDIO_AMP_ENABLE();
+//      AUDIO_AMP_ENABLE();
       dac_output_enable(DAC_CHANNEL_1);
 	   frequency_step = (freqHz*(1+clk_8m_div)*65536)/RTC_FAST_CLK_FREQ_APPROX;
       dac_frequency_set(clk_8m_div, frequency_step);
 		}
 	else {
       dac_output_disable(DAC_CHANNEL_1);
-      AUDIO_AMP_DISABLE();
+//      AUDIO_AMP_DISABLE();
 		}
 	}	
 	
