@@ -534,6 +534,7 @@ static void main_task(void* pvParameter) {
         }
     delayMs(1000);
 
+    #ifdef AUDIO_TEST
     ////////////////////////////////////////////////////////////////////
     //Audio Test
     ESP_LOGI(TAG, "Press btn0 within 3 seconds to test audio");
@@ -567,6 +568,7 @@ static void main_task(void* pvParameter) {
         delayMs(1000);
     }
     /////////////////////////////////////////////////////////////
+#endif
 
     IsServer = false;
     ESP_LOGI(TAG,"Press btn0 within 3 seconds to start WiFi AP and web server");
